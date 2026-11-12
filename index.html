@@ -134,7 +134,9 @@ a.btn{text-decoration:none}
   <div class="sb">Enviar resumen</div>
   <label>Correo destino</label><input id="dest" type="email" inputmode="email" placeholder="nombre@gruporoble.com">
   <button class="btn s" id="mail">Abrir correo con asunto y resumen</button>
-  <a class="btn s" id="sWa" target="_blank" rel="noopener">WhatsApp (solo texto)</a>
+  <a class="btn s" id="sMail" target="_blank" rel="noopener">Correo (Outlook)</a>
+  <a class="btn s" id="sGmail" target="_blank" rel="noopener">Correo (Gmail)</a>
+  <a class="btn s" id="sWa" target="_blank" rel="noopener">WhatsApp</a>
   <button class="btn s" id="sCopy">Copiar mensaje</button>
   <button class="btn s" id="reset" style="margin-top:22px">Eliminar este informe</button>
 </section>
@@ -269,6 +271,8 @@ document.addEventListener('change',async e=>{const el=e.target;if(el.dataset.afo
 function shareText(){const alta=S.hal.filter(h=>h.sev==='Alta').length,def=S.areas.filter(a=>a.cond==='Deficiente').length;
   return `Informe de visita – ${S.hotel||'Hotel'} (${S.disc})\nFecha: ${fmtF(S.fecha)} · ${S.dia}\nÁreas inspeccionadas: ${nInsp()} de ${S.areas.length} (${def} deficientes)\nHallazgos: ${S.hal.length} (${alta} de severidad alta)${S.concl?'\nConclusión preliminar: '+S.concl:''}${S.resumen?'\n\n'+S.resumen:''}\n\nSe adjunta el informe en PDF.\nGrupo Roble · Debida diligencia hoteles Hyatt`}
 function buildShare(){const su=`Informe de visita ${S.hotel||''} – ${S.disc} – ${fmtF(S.fecha)}`,b=shareText(),q=encodeURIComponent;
+  $('#sMail').href=`https://outlook.office.com/mail/deeplink/compose?subject=${q(su)}&body=${q(b)}`;
+  $('#sGmail').href=`https://mail.google.com/mail/?view=cm&fs=1&su=${q(su)}&body=${q(b)}`;
   $('#sWa').href=`https://wa.me/?text=${q(su+'\n\n'+b)}`}
 $('#sCopy').onclick=async()=>{try{await navigator.clipboard.writeText(shareText());toast('Mensaje copiado')}catch(e){toast('No se pudo copiar')}};
 function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=1100,s=Math.min(1,m/Math.max(im.width,im.height));const w=Math.round(im.width*s),h=Math.round(im.height*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);res({d:c.toDataURL('image/jpeg',.72),w,h,c:''})};im.onerror=rej;im.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
