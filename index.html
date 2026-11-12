@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Informes de Visita — Debida Diligencia Hoteles</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#16233f">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DD Hoteles">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Public+Sans:wght@400;600;700&display=swap">
+<script src="jspdf.min.js"></script>
+<style>
+:root{--surface:#fff;--navy:#16233f;--blue:#4a90d9;--green:#5c9e5c;--orange:#e08030;--amber:#d9a53a;--slate:#5a6f8f;--ink:#16233f;--body:#3a4358;--muted:#7a8494;--border:#dfe3e9;--track:#e7eaef;--band:#e9edf3;--tint:#f5f8fc;--danger:#c0392b;--r:4px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{font-family:"Public Sans","Helvetica Neue",Arial,sans-serif;background:var(--surface);color:var(--body);font-size:15px;line-height:1.35;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+header{background:var(--navy);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;position:sticky;top:0;z-index:5}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;opacity:.7;text-transform:uppercase}
+header h1{font-family:Archivo,"Arial Narrow",Arial,sans-serif;font-weight:800;font-size:20px;text-transform:uppercase;margin-top:3px;padding-right:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#back{position:absolute;right:12px;top:calc(14px + env(safe-area-inset-top));background:none;border:1px solid rgba(255,255,255,.4);color:#fff;font:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:var(--r)}
+.bar{height:3px;background:rgba(255,255,255,.2);border-radius:99px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s}
+main{padding:16px 14px;max-width:680px;margin:0 auto}
+section{display:none}section.on{display:block}
+.card{border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:var(--r);padding:14px;margin-bottom:14px;background:#fff}
+.card.b{border-top-color:var(--blue)}.card.g{border-top-color:var(--green)}.card.o{border-top-color:var(--orange)}.card.d{border-top-color:var(--danger)}
+h2{font-family:Archivo,"Arial Narrow",Arial,sans-serif;font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--navy);margin-bottom:10px;text-transform:uppercase}
+.sb{background:var(--navy);color:#fff;font-family:Archivo,"Arial Narrow",Arial,sans-serif;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;border-radius:var(--r);margin:20px 0 10px}
+label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin:11px 0 4px;letter-spacing:.08em;text-transform:uppercase}
+.card>label:first-of-type,.row>div>label:first-child{margin-top:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}.row:first-child{margin-top:0}
+.row label{margin-top:0}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:10px 11px;border:1px solid var(--border);border-radius:var(--r);background:#fff;color:var(--ink)}
+textarea{min-height:76px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue)}
+.btn{display:block;width:100%;padding:13px;border:1px solid var(--navy);border-radius:var(--r);font:inherit;font-weight:700;font-size:14px;letter-spacing:.04em;background:var(--navy);color:#fff;margin-top:10px;cursor:pointer;text-align:center}
+.btn.s{background:#fff;color:var(--navy)}.btn.bl{background:var(--blue);border-color:var(--blue)}.btn.gr{background:var(--green);border-color:var(--green)}
+.x{float:right;background:none;border:0;color:var(--danger);font:inherit;font-size:12px;font-weight:700;padding:2px 4px;cursor:pointer}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{flex:1 1 auto;padding:8px 8px;border:1px solid var(--border);background:#fff;border-radius:var(--r);font:inherit;font-size:12.5px;font-weight:600;color:var(--body);cursor:pointer}
+.seg.v{flex-direction:column}.seg.v button{text-align:left;padding:11px 12px;font-size:14px}
+.grp{font-family:Archivo,"Arial Narrow",Arial,sans-serif;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);background:var(--band);padding:7px 10px;border-radius:var(--r);margin:14px 0 2px}
+.grp:first-child{margin-top:0}
+.it{padding:10px 0;border-bottom:1px solid var(--border)}.it:last-child{border-bottom:0}
+.itn{font-size:14px;margin-bottom:7px;color:var(--ink)}
+.big{font-family:Archivo,sans-serif;font-weight:800;font-size:34px;line-height:1;color:var(--navy)}
+.mut{color:var(--muted);font-size:13px}
+.ph{width:100%;border-radius:var(--r);display:block;margin-bottom:8px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.kpi{border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:var(--r);padding:10px}
+.kpi small{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.kpi b{display:block;font-family:Archivo,sans-serif;font-weight:800;font-size:24px;color:var(--navy);margin:4px 0 2px}
+.kpi span{font-size:12px;color:var(--muted)}
+.rep{border:1px solid var(--border);border-left:3px solid var(--navy);border-radius:var(--r);padding:12px;margin-bottom:10px;cursor:pointer}
+.rep b{font-family:Archivo,sans-serif;font-weight:800;text-transform:uppercase;font-size:15px;color:var(--navy);display:block}
+.rep .mut{margin-top:2px}
+.rep .x{margin-top:-2px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;background:none;padding:14px 2px 13px;font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+nav button.on{color:var(--navy);box-shadow:inset 0 3px 0 var(--blue)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.thumb{position:relative;width:88px}.thumb img{width:88px;height:66px;object-fit:cover;border-radius:var(--r);display:block;border:1px solid var(--border)}.thumb button{position:absolute;top:2px;right:2px;background:rgba(22,35,63,.85);color:#fff;border:0;border-radius:var(--r);font-size:12px;padding:1px 6px;cursor:pointer}
+a.btn{text-decoration:none}
+.toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:9;max-width:90%;text-align:center}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Grupo Roble · Debida diligencia hoteles</div>
+  <h1 id="hTitle">Informes de visita</h1>
+  <button id="back" hidden>Informes</button>
+  <div class="bar"><i id="hBar"></i></div>
+</header>
+
+<main>
+<div id="vList">
+  <button class="btn bl" id="nuevo" style="margin-top:0">+ Nuevo informe de visita</button>
+  <div class="sb">Informes guardados</div>
+  <div id="repL"></div>
+  <p class="mut" style="margin-top:12px">Los informes se guardan solo en este navegador. Genera el PDF de cada visita para conservarlo y subirlo al SharePoint.</p>
+</div>
+
+<div id="vRep" hidden>
+<section id="s0" class="on">
+  <div class="card"><h2>Datos de la visita</h2>
+    <label>Hotel</label><input list="hoteles" data-p="hotel" placeholder="Selecciona o escribe">
+    <datalist id="hoteles"><option>HC Guatemala</option><option>Xela</option><option>HC San Salvador</option><option>HP San Pedro Sula</option><option>HP Tegucigalpa</option><option>HP Managua</option></datalist>
+    <div class="row" style="margin-top:11px"><div><label>País</label><input data-p="pais" placeholder="País"></div><div><label>Fecha</label><input type="date" data-p="fecha"></div></div>
+    <div class="row"><div><label>Día de visita</label><select data-p="dia"></select></div><div><label>Disciplina</label><select data-p="disc"></select></div></div>
+    <label>Consultor / empresa</label><input list="emps" data-p="emp" placeholder="Empresa que realiza la revisión">
+    <datalist id="emps"><option>FHC Ingenieros</option><option>Sinergia</option><option>Grupo Roble</option></datalist>
+    <label>Responsable del informe</label><input data-p="insp" placeholder="Nombre">
+    <div class="row" style="margin-top:11px"><div><label>Hora inicio</label><input type="time" data-p="hi"></div><div><label>Hora fin</label><input type="time" data-p="hf"></div></div>
+  </div>
+  <div class="card b"><h2>Coordinación en el hotel</h2>
+    <label>Contacto designado</label><input data-p="contacto" placeholder="Nombre, cargo y teléfono">
+    <label>Personal de apoyo en campo</label><input data-p="apoyo" placeholder="Quién acompañó la visita">
+  </div>
+  <div class="card g"><h2>Resumen de la visita</h2><textarea data-p="resumen" placeholder="Alcance cubierto, accesos, condiciones del hotel, coordinaciones…"></textarea></div>
+</section>
+
+<section id="s1">
+  <div class="sb" style="margin-top:0">Áreas inspeccionadas</div>
+  <div id="areaL"></div>
+  <button class="btn bl" data-add="area">+ Agregar área</button>
+  <button class="btn s" data-add="tipicas">Cargar áreas típicas de la disciplina</button>
+</section>
+
+<section id="s2">
+  <div class="sb" style="margin-top:0">Hallazgos</div><div id="halL"></div>
+  <button class="btn bl" data-add="hal">+ Agregar hallazgo</button>
+  <div class="sb">Solicitudes pendientes</div><div id="penL"></div>
+  <button class="btn s" data-add="pen">+ Agregar solicitud</button>
+</section>
+
+<section id="s3">
+  <div id="fotL"></div>
+  <label class="btn bl" style="cursor:pointer;margin-top:0;letter-spacing:.04em;text-transform:none;font-size:14px;color:#fff">Tomar / agregar fotos<input type="file" accept="image/*" multiple id="fIn" style="display:none"></label>
+  <p class="mut" style="margin-top:8px">Las fotos se comprimen automáticamente para el PDF.</p>
+</section>
+
+<section id="s4">
+  <div class="card d"><h2>Conclusión preliminar</h2>
+    <div id="conclS"></div>
+    <label>Comentario</label><textarea data-p="conclT" placeholder="Sustento de la conclusión. Es preliminar: la decisión final es del comité."></textarea>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <button class="btn bl" id="share">Compartir PDF (WhatsApp, correo…)</button>
+  <button class="btn gr" id="pdf">Descargar PDF</button>
+  <p class="mut" id="pdfNote" style="margin-top:10px"></p>
+  <div class="sb">Enviar resumen</div>
+  <label>Correo destino</label><input id="dest" type="email" inputmode="email" placeholder="nombre@gruporoble.com">
+  <button class="btn s" id="mail">Abrir correo con asunto y resumen</button>
+  <a class="btn s" id="sWa" target="_blank" rel="noopener">WhatsApp (solo texto)</a>
+  <button class="btn s" id="sCopy">Copiar mensaje</button>
+  <button class="btn s" id="reset" style="margin-top:22px">Eliminar este informe</button>
+</section>
+</div>
+</main>
+
+<nav id="nav" hidden>
+  <button class="on" data-t="0">Datos</button>
+  <button data-t="1">Inspección</button>
+  <button data-t="2">Hallazgos</button>
+  <button data-t="3">Fotos</button>
+  <button data-t="4">PDF</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const HOTELES={'HC Guatemala':'Guatemala','Xela':'Guatemala','HC San Salvador':'El Salvador','HP San Pedro Sula':'Honduras','HP Tegucigalpa':'Honduras','HP Managua':'Nicaragua'};
+const DIAS=['Día 1','Día 2','Día 3'],DISC=['Estructural','Envolvente','MEP','General'];
+const AREAS={
+ Estructural:['Nudos viga-columna','Fisuras por flexión','Losas','Muros','Columnas','Cimentación y sótanos','Cubierta y azotea','Juntas sísmicas'],
+ Envolvente:['Fachada y muros cortina','Ventanería y sellos','Cubierta e impermeabilización','Terrazas y balcones','Juntas y remates'],
+ MEP:['Acometida y transformadores','Cuartos eléctricos y tableros','Planta de emergencia','Sistema HVAC y chillers','Cuartos de bombas e hidrosanitario','Agua caliente y calderas','Sistema contra incendio (PCI)','Ascensores','Piscinas','Cocina'],
+ General:['Áreas públicas','Habitaciones (muestra)','Back of house','Salones y eventos','Estacionamientos','Áreas exteriores']};
+const TIPOS=['Estructural','Envolvente','Eléctrico','Mecánico','Hidrosanitario','PCI','Ascensores','Mantenimiento','Documental','Otro'];
+const TIPO_D={Estructural:'Estructural',Envolvente:'Envolvente',MEP:'Eléctrico',General:'Otro'};
+const CC={Bueno:'#5c9e5c',Regular:'#d9a53a','Deficiente':'#c0392b','No accedido':'#5a6f8f'};
+const CS={Baja:'#5c9e5c',Media:'#d9a53a',Alta:'#c0392b'};
+const CK={'Sin observaciones relevantes':'#5c9e5c','Observaciones menores':'#4a90d9','Observaciones relevantes':'#e08030','Requiere estudio adicional':'#c0392b'};
+const NAVY='#16233f';
+
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const opt=(a,v)=>a.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('');
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const fmtF=d=>{if(!d)return '';const [y,m,dd]=d.split('-');return `${dd}/${m}/${y.slice(2)}`};
+const usd=n=>'US$ '+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const num=v=>{const n=parseFloat(String(v||'').replace(/,/g,''));return isNaN(n)?0:n};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600)}
+
+// ---- almacenamiento (IndexedDB con respaldo en memoria)
+let db=null;const mem={};
+function initDB(){return new Promise(res=>{try{const r=indexedDB.open('roble_dd_visitas',1);r.onupgradeneeded=()=>r.result.createObjectStore('r',{keyPath:'id'});r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>res()}catch(e){res()}})}
+function put(o){mem[o.id]=o;if(!db)return;try{db.transaction('r','readwrite').objectStore('r').put(o)}catch(e){}}
+function delRep(id){del(id);if(typeof SEEDS!=='undefined'&&SEEDS.some(x=>x.id===id))put({id:'__del_'+id})}
+function del(id){delete mem[id];if(!db)return;try{db.transaction('r','readwrite').objectStore('r').delete(id)}catch(e){}}
+function all(){return new Promise(res=>{if(!db)return res(Object.values(mem));try{const q=db.transaction('r').objectStore('r').getAll();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res(Object.values(mem))}catch(e){res(Object.values(mem))}})}
+let tm;function save(){clearTimeout(tm);tm=setTimeout(()=>{if(S){S.upd=Date.now();put(S)}},300)}
+
+// ---- estado
+let S=null,curTab=0;
+const defAreas=d=>AREAS[d].map(n=>({n,cond:'',nota:'',fot:[]}));
+const blank=()=>({id:'r'+Date.now().toString(36),hotel:'',pais:'',fecha:today(),dia:'Día 1',disc:'Estructural',emp:'',insp:'',hi:'',hf:'',contacto:'',apoyo:'',resumen:'',areas:defAreas('Estructural'),hal:[],pen:[],fot:[],concl:'',conclT:'',upd:Date.now()});
+const getP=p=>p.split('.').reduce((o,k)=>o?.[k],S);
+function setP(p,v){const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
+const nInsp=()=>S.areas.filter(a=>a.cond?a.cond!=='No accedido':((a.fot&&a.fot.length)||a.nota)).length;
+
+// ---- vistas
+function showList(){if(S){clearTimeout(tm);S.upd=Date.now();put(S)}S=null;$('#vRep').hidden=true;$('#vList').hidden=false;$('#nav').hidden=true;$('#back').hidden=true;$('#hTitle').textContent='Informes de visita';$('#hBar').style.width='0';renderList();scrollTo(0,0)}
+function openRep(r){S=Object.assign(blank(),r);$('#vList').hidden=true;$('#vRep').hidden=false;$('#nav').hidden=false;$('#back').hidden=false;syncFields();renderInsp();renderHal();renderFot();go(0)}
+async function renderList(){
+  const l=(await all()).filter(r=>!String(r.id).startsWith('__')).sort((a,b)=>(b.upd||0)-(a.upd||0));
+  $('#repL').innerHTML=l.length?l.map(r=>`<div class="rep" data-open="${r.id}"><button class="x" data-delrep="${r.id}">Eliminar</button><b>${esc(r.hotel||'Sin hotel')}</b><div class="mut">${fmtF(r.fecha)} · ${esc(r.disc)} · ${esc(r.dia)}</div><div class="mut">${(r.areas||[]).filter(a=>a.cond&&a.cond!=='No accedido').length} áreas inspeccionadas · ${(r.hal||[]).length} hallazgos · ${(r.fot||[]).length+(r.areas||[]).reduce((n,a)=>n+(a.fot||[]).length,0)} fotos</div></div>`).join(''):'<p class="mut">Aún no hay informes. Crea el primero con el botón de arriba.</p>';
+}
+function go(i){curTab=i;$$('section').forEach((s,j)=>s.classList.toggle('on',i===j));$$('#nav button').forEach((b,j)=>b.classList.toggle('on',i===j));if(i===4)summary();scrollTo(0,0)}
+function head(){if(!S)return;$('#hTitle').textContent=S.hotel||'Nuevo informe';$('#hBar').style.width=(S.areas.length?Math.round(nInsp()/S.areas.length*100):0)+'%'}
+function syncFields(){
+  $('[data-p=dia]').innerHTML=opt(DIAS,S.dia);$('[data-p=disc]').innerHTML=opt(DISC,S.disc);
+  $$('[data-p]').forEach(el=>{if(el.tagName==='SELECT')return;el.value=getP(el.dataset.p)??''});
+  head()
+}
+
+// ---- componentes
+const seg=(p,arr,v,cols,tog,cls='')=>`<div class="seg ${cls}">${arr.map(o=>{const on=v===o,c=cols[o],tc=c==='#d9a53a'?NAVY:'#fff';return `<button type="button" data-seg="${p}" data-v="${o}" ${tog?'data-tog="1"':''} style="${on?`background:${c};border-color:${c};color:${tc}`:''}">${o}</button>`}).join('')}</div>`;
+function renderInsp(){
+  $('#areaL').innerHTML=S.areas.map((a,i)=>`<div class="card b"><button class="x" data-del="areas" data-i="${i}">Quitar</button><label>Área</label><input data-p="areas.${i}.n" value="${esc(a.n)}" placeholder="Zona o sistema inspeccionado"><label>Condición</label>${seg('areas.'+i+'.cond',['Bueno','Regular','Deficiente','No accedido'],a.cond,CC,1)}<label>Observación</label><input data-p="areas.${i}.nota" value="${esc(a.nota)}" placeholder="Opcional"><div class="thumbs">${(a.fot||[]).map((f,j)=>`<div class="thumb"><img src="${f.d}"><button data-delaf="${i}.${j}">Quitar</button></div>`).join('')}</div><label class="btn s" style="cursor:pointer;margin-top:10px;font-size:13px;letter-spacing:0;text-transform:none;color:var(--navy)">+ Agregar foto<input type="file" accept="image/*" multiple data-afoto="${i}" style="display:none"></label></div>`).join('');
+}
+function renderHal(){
+  $('#halL').innerHTML=S.hal.map((h,i)=>`<div class="card d"><button class="x" data-del="hal" data-i="${i}">Quitar</button><div class="row"><div><label>Tipo</label><select data-p="hal.${i}.tipo">${opt(TIPOS,h.tipo)}</select></div><div><label>Estudio adicional</label><select data-p="hal.${i}.estudio">${opt(['No','Sí'],h.estudio)}</select></div></div>
+  <label>Severidad</label>${seg('hal.'+i+'.sev',['Baja','Media','Alta'],h.sev,CS)}
+  <label>Ubicación</label><input data-p="hal.${i}.ubic" value="${esc(h.ubic)}" placeholder="Nivel, eje o área">
+  <label>Descripción</label><textarea data-p="hal.${i}.desc" placeholder="Qué se observó">${esc(h.desc)}</textarea>
+  <label>Recomendación</label><textarea data-p="hal.${i}.rec">${esc(h.rec)}</textarea>
+  <label>CAPEX estimado (US$)</label><input data-p="hal.${i}.capex" inputmode="decimal" value="${esc(h.capex)}" placeholder="Opcional"></div>`).join('');
+  $('#penL').innerHTML=S.pen.map((p,i)=>`<div class="card"><button class="x" data-del="pen" data-i="${i}">Quitar</button><label>Solicitud o pendiente</label><input data-p="pen.${i}.t" value="${esc(p.t)}"><div class="row" style="margin-top:11px"><div><label>Responsable</label><input data-p="pen.${i}.resp" value="${esc(p.resp)}"></div><div><label>Fecha</label><input type="date" data-p="pen.${i}.f" value="${esc(p.f)}"></div></div></div>`).join('');
+}
+function renderFot(){$('#fotL').innerHTML=S.fot.map((x,i)=>`<div class="card b"><button class="x" data-del="fot" data-i="${i}">Quitar</button><img class="ph" src="${x.d}"><label>Comentario</label><input data-p="fot.${i}.c" value="${esc(x.c)}" placeholder="Ubicación / qué muestra"></div>`).join('')}
+function summary(){
+  $('#conclS').innerHTML=seg('concl',Object.keys(CK),S.concl,CK,1,'v');
+  const alta=S.hal.filter(h=>h.sev==='Alta').length,def=S.areas.filter(a=>a.cond==='Deficiente').length;
+  $('#kpis').innerHTML=`<div class="kpi" style="border-top-color:var(--blue)"><small>Áreas</small><b>${nInsp()}</b><span>de ${S.areas.length} · ${def} deficientes</span></div><div class="kpi" style="border-top-color:var(--green)"><small>Hallazgos</small><b>${S.hal.length}</b><span>${alta} de severidad alta</span></div>`;
+  buildShare();
+  $('#pdfNote').textContent='';
+}
+
+// ---- eventos
+$('#nav').onclick=e=>{const b=e.target.closest('button');if(b)go(+b.dataset.t)};
+$('#back').onclick=showList;
+$('#nuevo').onclick=()=>{const r=blank();put(r);openRep(r)};
+document.addEventListener('input',e=>{
+  const el=e.target,p=el.dataset.p;if(!p||!S)return;
+  setP(p,el.value);
+  if(p==='hotel'&&HOTELES[el.value]&&!S.pais){S.pais=HOTELES[el.value];$('[data-p=pais]').value=S.pais}
+  if(p==='disc'){if(S.areas.every(a=>!a.cond&&!a.nota)){S.areas=defAreas(S.disc);renderInsp()}}
+  head();save()
+});
+let armed=null,armT;
+function confirmTap(btn,key,fn){if(armed===key){clearTimeout(armT);armed=null;fn();return}armed=key;btn.dataset.o=btn.textContent;btn.textContent='¿Confirmar?';armT=setTimeout(()=>{armed=null;btn.textContent=btn.dataset.o},3000)}
+document.addEventListener('click',e=>{
+  const dr=e.target.closest('[data-delrep]');
+  if(dr){e.stopPropagation();confirmTap(dr,dr.dataset.delrep,async()=>{delRep(dr.dataset.delrep);renderList()});return}
+  const op=e.target.closest('[data-open]');
+  if(op){all().then(l=>{const r=l.find(x=>x.id===op.dataset.open);if(r)openRep(r)});return}
+  if(!S)return;
+  const sg=e.target.closest('[data-seg]');
+  if(sg){const p=sg.dataset.seg,v=sg.dataset.v;setP(p,sg.dataset.tog&&getP(p)===v?'':v);renderInsp();renderHal();if(curTab===4)summary();head();save();return}
+  const a=e.target.closest('[data-add]');
+  if(a){const k=a.dataset.add;
+    if(k==='area')S.areas.push({n:'',cond:'',nota:'',fot:[]});
+    else if(k==='tipicas'){const have=new Set(S.areas.map(x=>x.n));const add=AREAS[S.disc].filter(n=>!have.has(n));S.areas.push(...add.map(n=>({n,cond:'',nota:'',fot:[]})));toast(add.length?`${add.length} áreas agregadas`:'Ya están todas las áreas típicas')}
+    else if(k==='hal')S.hal.push({tipo:TIPO_D[S.disc],sev:'Media',ubic:'',desc:'',rec:'',capex:'',estudio:'No'});
+    else if(k==='pen')S.pen.push({t:'',resp:'',f:''});
+    renderInsp();renderHal();head();save();return}
+  const daf=e.target.closest('[data-delaf]');
+  if(daf){const [i,j]=daf.dataset.delaf.split('.').map(Number);S.areas[i].fot.splice(j,1);renderInsp();save();return}
+  const d=e.target.closest('[data-del]');
+  if(d){const k=d.dataset.del;S[k].splice(+d.dataset.i,1);renderInsp();renderHal();renderFot();head();save()}
+});
+$('#reset').onclick=e=>confirmTap(e.target,'reset',()=>{const id=S.id;S=null;delRep(id);showList();toast('Informe eliminado')});
+
+// fotos
+document.addEventListener('change',async e=>{const el=e.target;if(el.dataset.afoto===undefined||!S)return;const a=S.areas[+el.dataset.afoto];a.fot=a.fot||[];for(const f of el.files){try{a.fot.push(await shrink(f))}catch(x){toast('No se pudo leer una foto')}}el.value='';renderInsp();save()});
+function shareText(){const alta=S.hal.filter(h=>h.sev==='Alta').length,def=S.areas.filter(a=>a.cond==='Deficiente').length;
+  return `Informe de visita – ${S.hotel||'Hotel'} (${S.disc})\nFecha: ${fmtF(S.fecha)} · ${S.dia}\nÁreas inspeccionadas: ${nInsp()} de ${S.areas.length} (${def} deficientes)\nHallazgos: ${S.hal.length} (${alta} de severidad alta)${S.concl?'\nConclusión preliminar: '+S.concl:''}${S.resumen?'\n\n'+S.resumen:''}\n\nSe adjunta el informe en PDF.\nGrupo Roble · Debida diligencia hoteles Hyatt`}
+function buildShare(){const su=`Informe de visita ${S.hotel||''} – ${S.disc} – ${fmtF(S.fecha)}`,b=shareText(),q=encodeURIComponent;
+  $('#sWa').href=`https://wa.me/?text=${q(su+'\n\n'+b)}`}
+$('#sCopy').onclick=async()=>{try{await navigator.clipboard.writeText(shareText());toast('Mensaje copiado')}catch(e){toast('No se pudo copiar')}};
+function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=1100,s=Math.min(1,m/Math.max(im.width,im.height));const w=Math.round(im.width*s),h=Math.round(im.height*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);res({d:c.toDataURL('image/jpeg',.72),w,h,c:''})};im.onerror=rej;im.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
+$('#fIn').onchange=async e=>{for(const f of e.target.files){try{S.fot.push(await shrink(f))}catch(x){toast('No se pudo leer una foto')}}e.target.value='';renderFot();save()};
+
+// ---- PDF
+async function makePDF(){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+  const W=210,M=14,CW=W-2*M,H=297;let y=0,pg=1;
+  const hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+  const cNAVY=hx('#16233f'),cBLUE=hx('#4a90d9'),cGREEN=hx('#5c9e5c'),cAMBER=hx('#d9a53a'),cDANGER=hx('#c0392b'),BODY=hx('#3a4358'),MUTED=hx('#7a8494'),LINE=hx('#dfe3e9'),BAND=hx('#e9edf3'),WHITE=[255,255,255],LIGHT=[170,185,215];
+  const T=(t,x,yy,o={})=>{doc.setFont('helvetica',o.b?'bold':'normal');doc.setFontSize(o.s||9);doc.setTextColor(...(o.c||BODY));const op={};if(o.a)op.align=o.a;if(o.cs)op.charSpace=o.cs;doc.text(String(t),x,yy,op)};
+  const wrap=(t,w,s=9,b=false)=>{doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(s);return doc.splitTextToSize(String(t||''),w)};
+  const chip=(t,x,yy,col)=>{doc.setFont('helvetica','bold');doc.setFontSize(7.5);const w=doc.getTextWidth(t)+5;doc.setFillColor(...col);doc.roundedRect(x,yy-3.6,w,5,2.5,2.5,'F');doc.setTextColor(...(col===cAMBER?cNAVY:WHITE));doc.text(t,x+2.5,yy);return w};
+  function top(){doc.setFillColor(...cNAVY);doc.rect(0,0,W,pg===1?36:14,'F');
+    if(pg===1){T('GRUPO ROBLE  ·  DEBIDA DILIGENCIA HOTELES HYATT',M,11,{s:7.5,b:1,c:LIGHT,cs:.4});T('INFORME DE VISITA',W-M,11,{s:7.5,b:1,c:LIGHT,a:'right',cs:.4});T((S.hotel||'Hotel').toUpperCase(),M,23,{s:20,b:1,c:WHITE});T(`${fmtF(S.fecha)}  ·  ${S.dia}`,W-M,23,{s:11,b:1,c:WHITE,a:'right'});T(`REVISIÓN ${S.disc.toUpperCase()}`,M,31,{s:8,b:1,c:LIGHT,cs:.4});y=44}
+    else{T((S.hotel||'Hotel').toUpperCase(),M,9,{s:9,b:1,c:WHITE});T(`Informe de visita · ${S.disc} · ${fmtF(S.fecha)}`,W-M,9,{s:8,a:'right',c:LIGHT});y=22}}
+  const need=h=>{if(y+h>H-16){doc.addPage();pg++;top()}};
+  const bar=(t)=>{need(18);doc.setFillColor(...cNAVY);doc.roundedRect(M,y,CW,7,1,1,'F');T(t.toUpperCase(),M+3,y+4.8,{s:9,b:1,c:WHITE,cs:.4});y+=11};
+  top();
+
+  // datos
+  const info=[['País',S.pais],['Consultor / empresa',S.emp],['Responsable del informe',S.insp],['Contacto del hotel',S.contacto],['Apoyo en campo',S.apoyo],['Horario',S.hi&&S.hf?`${S.hi} – ${S.hf}`:'']];
+  const cw=CW/3;info.forEach((r,i)=>{const x=M+(i%3)*cw,yy=y+Math.floor(i/3)*12;T(r[0].toUpperCase(),x,yy,{s:7,b:1,c:MUTED,cs:.3});T(wrap(r[1]||'–',cw-4,9.5)[0],x,yy+4.8,{s:9.5,c:cNAVY})});y+=28;
+
+  // KPI
+  const alta=S.hal.filter(h=>h.sev==='Alta').length,def=S.areas.filter(a=>a.cond==='Deficiente').length;
+  const kw=(CW-4)/2;[['ÁREAS INSPECCIONADAS',`${nInsp()} de ${S.areas.length}`,`${def} en condición deficiente`,cBLUE],['HALLAZGOS',String(S.hal.length),`${alta} de severidad alta`,cGREEN]].forEach((k,i)=>{const x=M+i*(kw+4);doc.setDrawColor(...LINE);doc.setLineWidth(.25);doc.rect(x,y,kw,20);doc.setFillColor(...k[3]);doc.rect(x,y,kw,.9,'F');T(k[0],x+3,y+6,{s:6.5,b:1,c:MUTED,cs:.3});T(k[1],x+3,y+13.5,{s:15,b:1,c:cNAVY});T(k[2],x+3,y+17,{s:7.5,c:MUTED})});y+=27;
+
+  // conclusión
+  if(S.concl||S.conclT){bar('Conclusión preliminar');if(S.concl){chip(S.concl,M,y+1,hx(CK[S.concl]));y+=7}
+    wrap(S.conclT,CW,9).forEach(l=>{need(5);T(l,M,y,{s:9});y+=4.2});y+=4}
+  // resumen
+  if(S.resumen){bar('Resumen de la visita');wrap(S.resumen,CW,9).forEach(l=>{need(5);T(l,M,y,{s:9});y+=4.2});y+=4}
+
+  // áreas
+  bar('Áreas inspeccionadas');
+  if(!S.areas.length){T('Sin áreas registradas.',M,y,{c:MUTED});y+=8}else{
+    need(8);T('ÁREA',M+2,y,{s:7,b:1,c:MUTED,cs:.3});T('CONDICIÓN',M+CW*.42,y,{s:7,b:1,c:MUTED,cs:.3});T('OBSERVACIÓN',M+CW*.64,y,{s:7,b:1,c:MUTED,cs:.3});y+=4;
+    S.areas.forEach(a=>{const al=wrap(a.n,CW*.38,8.5),nl=wrap(a.nota,CW*.35,8),rh=Math.max(7,Math.max(al.length,nl.length)*3.7+3.5);need(rh);
+      doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...cNAVY);doc.text(al,M+2,y+3);
+      if(a.cond)chip(a.cond,M+CW*.42,y+3,hx(CC[a.cond]));else T('Sin registrar',M+CW*.42,y+3,{s:8,c:MUTED});
+      doc.setFontSize(8);doc.setTextColor(...BODY);doc.text(nl,M+CW*.64,y+3);
+      doc.setDrawColor(...LINE);doc.setLineWidth(.15);doc.line(M,y+rh-.5,M+CW,y+rh-.5);y+=rh})}
+  y+=5;
+
+  // hallazgos
+  bar('Hallazgos');
+  if(!S.hal.length){T('Sin hallazgos en esta visita.',M,y,{c:MUTED});y+=8}
+  S.hal.forEach((h,i)=>{const col=hx(CS[h.sev]);const dl=wrap(h.desc,CW-8,9),rl=wrap(h.rec?'Recomendación: '+h.rec:'',CW-8,8.5);const bh=17+(dl.length+rl.length)*3.9;need(bh+3);const y0=y;
+    doc.setFillColor(245,248,252);doc.rect(M,y-3,CW,bh,'F');doc.setFillColor(...col);doc.rect(M,y-3,1.5,bh,'F');
+    T(`${i+1}. ${h.tipo}`,M+4,y+1.5,{b:1,s:9.5,c:cNAVY});const cx=M+4+doc.getTextWidth(`${i+1}. ${h.tipo}`)+3;chip('Severidad '+h.sev,cx,y+1.2,col);
+    if(h.estudio==='Sí')T('Requiere estudio adicional',W-M-2,y+1.5,{s:8,b:1,c:cDANGER,a:'right'});y+=6.5;
+    if(h.ubic){T('Ubicación: '+h.ubic,M+4,y,{s:8.5,c:MUTED});y+=4.2}
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...cNAVY);doc.text(dl,M+4,y);y+=dl.length*3.9;
+    if(h.rec){doc.setFontSize(8.5);doc.setTextColor(...BODY);doc.text(rl,M+4,y);y+=rl.length*3.9}
+    if(num(h.capex))T('CAPEX estimado: '+usd(num(h.capex)),M+4,y+1,{s:8.5,b:1,c:cNAVY});
+    y=y0+bh+1});
+  const tot=S.hal.reduce((a,h)=>a+num(h.capex),0);
+  if(tot){need(12);doc.setFillColor(...cNAVY);doc.roundedRect(M,y,CW,8,1,1,'F');T('CAPEX ESTIMADO TOTAL',M+3,y+5.4,{s:9,b:1,c:WHITE,cs:.4});T(usd(tot),W-M-3,y+5.5,{s:11,b:1,c:WHITE,a:'right'});y+=14}
+
+  // pendientes
+  if(S.pen.length){y+=2;bar('Solicitudes pendientes');S.pen.forEach(p=>{const l=wrap(p.t,CW-62,9);need(l.length*4.2+3);T('•',M+1,y,{s:9});doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...cNAVY);doc.text(l,M+5,y);T(`${p.resp||'–'}  ·  ${fmtF(p.f)||'–'}`,W-M,y,{s:8,a:'right',c:MUTED});y+=l.length*4.2+2})}
+
+  // fotos
+  const FOTOS=[...S.fot,...S.areas.flatMap(a=>(a.fot||[]).map(f=>({...f,c:`${a.n||'Área'}${f.c?' – '+f.c:''}`})))];
+  if(FOTOS.length){doc.addPage();pg++;top();bar('Registro fotográfico');
+    const pw=(CW-6)/2;let col=0,rowH=0,k=0;
+    for(const f of FOTOS){k++;const sc=Math.min(pw/f.w,80/f.h),iw=f.w*sc,ph=f.h*sc,cl=wrap(`${k}. ${f.c||''}`,pw,8),bh=ph+cl.length*3.6+7;
+      if(col===0)need(bh);
+      const x=M+col*(pw+6);doc.addImage(f.d,'JPEG',x,y,iw,ph);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...MUTED);doc.text(cl,x,y+ph+4);
+      rowH=Math.max(rowH,bh);col++;if(col===2){col=0;y+=rowH;rowH=0}}
+    if(col===1)y+=rowH}
+
+  const np=doc.getNumberOfPages();
+  for(let i=1;i<=np;i++){doc.setPage(i);doc.setDrawColor(...LINE);doc.setLineWidth(.25);doc.line(M,H-12,W-M,H-12);T(`Grupo Roble · Informe de visita · ${S.hotel||''}`,M,H-7,{s:7.5,c:MUTED});T(`Página ${i} de ${np}`,W-M,H-7,{s:7.5,c:MUTED,a:'right'})}
+  return doc.output('blob');
+}
+async function getPDF(){
+  if(!S.hotel){toast('Indica el hotel en la pestaña Datos');go(0);return null}
+  if(!window.jspdf){toast('No cargó la librería PDF; abre la app con internet una vez');return null}
+  $('#pdfNote').textContent='Generando…';
+  try{const blob=await makePDF();$('#pdfNote').textContent='';return {blob,name:`Informe_Visita_${S.hotel.replace(/[^\w]+/g,'_')}_${S.disc}_${S.fecha}.pdf`}}
+  catch(e){console.error(e);$('#pdfNote').textContent='Error al generar el PDF: '+e.message;return null}}
+function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+const asunto=()=>`Informe de visita ${S.hotel||''} – ${S.disc} – ${fmtF(S.fecha)}`;
+$('#pdf').onclick=async()=>{const r=await getPDF();if(!r)return;download(r.blob,r.name);$('#pdfNote').textContent='PDF descargado: '+r.name};
+$('#share').onclick=async()=>{const r=await getPDF();if(!r)return;
+  const f=new File([r.blob],r.name,{type:'application/pdf'});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:asunto(),text:shareText()});$('#pdfNote').textContent='Informe compartido.';return}catch(e){if(e.name==='AbortError')return}}
+  download(r.blob,r.name);$('#pdfNote').textContent='Este navegador no permite compartir archivos; se descargó el PDF para que lo adjuntes.'};
+$('#mail').onclick=async()=>{const r=await getPDF();if(!r)return;download(r.blob,r.name);
+  const to=($('#dest').value||'').replace(/\s+/g,'');
+  location.href=`mailto:${to}?subject=${encodeURIComponent(asunto())}&body=${encodeURIComponent(shareText())}`;
+  $('#pdfNote').textContent='Adjunta el PDF descargado en el correo.'};
+
+initDB().then(showList);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
