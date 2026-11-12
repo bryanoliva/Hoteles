@@ -117,6 +117,8 @@ a.btn{text-decoration:none}
   <button class="btn bl" data-add="hal">+ Agregar hallazgo</button>
   <div class="sb">Solicitudes pendientes</div><div id="penL"></div>
   <button class="btn s" data-add="pen">+ Agregar solicitud</button>
+  <div class="sb">Pasos a seguir</div><div id="pasL"></div>
+  <button class="btn bl" data-add="paso">+ Agregar paso</button>
 </section>
 
 <section id="s3">
@@ -192,14 +194,14 @@ let tm;function save(){clearTimeout(tm);tm=setTimeout(()=>{if(S){S.upd=Date.now(
 // ---- estado
 let S=null,curTab=0;
 const defAreas=d=>AREAS[d].map(n=>({n,cond:'',nota:'',fot:[]}));
-const blank=()=>({id:'r'+Date.now().toString(36),hotel:'',pais:'',fecha:today(),dia:'Día 1',disc:'Estructural',emp:'',part:[],insp:'',hi:'',hf:'',contacto:'',apoyo:'',resumen:'',areas:defAreas('Estructural'),hal:[],pen:[],fot:[],concl:'',conclT:'',upd:Date.now()});
+const blank=()=>({id:'r'+Date.now().toString(36),hotel:'',pais:'',fecha:today(),dia:'Día 1',disc:'Estructural',emp:'',part:[],insp:'',hi:'',hf:'',contacto:'',apoyo:'',resumen:'',areas:defAreas('Estructural'),hal:[],pen:[],pasos:[],fot:[],concl:'',conclT:'',upd:Date.now()});
 const getP=p=>p.split('.').reduce((o,k)=>o?.[k],S);
 function setP(p,v){const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
 const nInsp=()=>S.areas.filter(a=>a.cond?a.cond!=='No accedido':((a.fot&&a.fot.length)||a.nota)).length;
 
 // ---- vistas
 function showList(){if(S){clearTimeout(tm);S.upd=Date.now();put(S)}S=null;$('#vRep').hidden=true;$('#vList').hidden=false;$('#nav').hidden=true;$('#back').hidden=true;$('#hTitle').textContent='Informes de visita';$('#hBar').style.width='0';renderList();scrollTo(0,0)}
-function openRep(r){S=Object.assign(blank(),r);$('#vList').hidden=true;$('#vRep').hidden=false;$('#nav').hidden=false;$('#back').hidden=false;syncFields();renderInsp();renderHal();renderFot();go(0)}
+function openRep(r){S=Object.assign(blank(),r);$('#vList').hidden=true;$('#vRep').hidden=false;$('#nav').hidden=false;$('#back').hidden=false;syncFields();renderInsp();renderHal();renderPasos();renderFot();go(0)}
 async function renderList(){
   const l=(await all()).filter(r=>!String(r.id).startsWith('__')).sort((a,b)=>(b.upd||0)-(a.upd||0));
   $('#repL').innerHTML=l.length?l.map(r=>`<div class="rep" data-open="${r.id}"><button class="x" data-delrep="${r.id}">Eliminar</button><b>${esc(r.hotel||'Sin hotel')}</b><div class="mut">${fmtF(r.fecha)} · ${esc(r.disc)} · ${esc(r.dia)}</div><div class="mut">${(r.areas||[]).filter(a=>a.cond?a.cond!=='No accedido':((a.fot&&a.fot.length)||a.nota)).length} áreas inspeccionadas · ${(r.hal||[]).length} hallazgos · ${(r.fot||[]).length+(r.areas||[]).reduce((n,a)=>n+(a.fot||[]).length,0)} fotos</div></div>`).join(''):'<p class="mut">Aún no hay informes. Crea el primero con el botón de arriba.</p>';
@@ -233,6 +235,7 @@ function renderHal(){
   <label>CAPEX estimado (US$)</label><input data-p="hal.${i}.capex" inputmode="decimal" value="${esc(h.capex)}" placeholder="Opcional"></div>`).join('');
   $('#penL').innerHTML=S.pen.map((p,i)=>`<div class="card"><button class="x" data-del="pen" data-i="${i}">Quitar</button><label>Solicitud o pendiente</label><input data-p="pen.${i}.t" value="${esc(p.t)}"><div class="row" style="margin-top:11px"><div><label>Responsable</label><input data-p="pen.${i}.resp" value="${esc(p.resp)}"></div><div><label>Fecha</label><input type="date" data-p="pen.${i}.f" value="${esc(p.f)}"></div></div></div>`).join('');
 }
+function renderPasos(){$('#pasL').innerHTML=(S.pasos||[]).map((x,i)=>`<div class="card g"><button class="x" data-del="pasos" data-i="${i}">Quitar</button><label>Paso a seguir</label><textarea data-p="pasos.${i}.t" placeholder="Qué se debe hacer">${esc(x.t)}</textarea><div class="row" style="margin-top:11px"><div><label>Responsable</label><input data-p="pasos.${i}.resp" value="${esc(x.resp)}"></div><div><label>Fecha</label><input type="date" data-p="pasos.${i}.f" value="${esc(x.f)}"></div></div><label>Estado</label>${seg('pasos.'+i+'.est',['Pendiente','En proceso','Hecho'],x.est,{Pendiente:'#5a6f8f','En proceso':'#e08030',Hecho:'#5c9e5c'})}</div>`).join('')}
 function renderFot(){$('#fotL').innerHTML=S.fot.map((x,i)=>`<div class="card b"><button class="x" data-del="fot" data-i="${i}">Quitar</button><img class="ph" src="${x.d}"><label>Comentario</label><input data-p="fot.${i}.c" value="${esc(x.c)}" placeholder="Ubicación / qué muestra"></div>`).join('')}
 function summary(){
   $('#conclS').innerHTML=seg('concl',Object.keys(CK),S.concl,CK,1,'v');
@@ -262,27 +265,28 @@ document.addEventListener('click',e=>{
   if(op){all().then(l=>{const r=l.find(x=>x.id===op.dataset.open);if(r)openRep(r)});return}
   if(!S)return;
   const sg=e.target.closest('[data-seg]');
-  if(sg){const p=sg.dataset.seg,v=sg.dataset.v;setP(p,sg.dataset.tog&&getP(p)===v?'':v);renderInsp();renderHal();if(curTab===4)summary();head();save();return}
+  if(sg){const p=sg.dataset.seg,v=sg.dataset.v;setP(p,sg.dataset.tog&&getP(p)===v?'':v);renderInsp();renderHal();renderPasos();if(curTab===4)summary();head();save();return}
   const a=e.target.closest('[data-add]');
   if(a){const k=a.dataset.add;
     if(k==='area')S.areas.push({n:'',cond:'',nota:'',fot:[]});
     else if(k==='tipicas'){const have=new Set(S.areas.map(x=>x.n));const add=AREAS[S.disc].filter(n=>!have.has(n));S.areas.push(...add.map(n=>({n,cond:'',nota:'',fot:[]})));toast(add.length?`${add.length} áreas agregadas`:'Ya están todas las áreas típicas')}
     else if(k==='hal')S.hal.push({tipo:TIPO_D[S.disc],sev:'Media',ubic:'',desc:'',rec:'',capex:'',estudio:'No'});
     else if(k==='pen')S.pen.push({t:'',resp:'',f:''});
-    renderInsp();renderHal();head();save();return}
+    else if(k==='paso'){S.pasos=S.pasos||[];S.pasos.push({t:'',resp:'',f:'',est:'Pendiente'})}
+    renderInsp();renderHal();renderPasos();head();save();return}
   const dpt=e.target.closest('[data-delpart]');
   if(dpt){S.part.splice(+dpt.dataset.delpart,1);renderPart();save();return}
   const daf=e.target.closest('[data-delaf]');
   if(daf){const [i,j]=daf.dataset.delaf.split('.').map(Number);S.areas[i].fot.splice(j,1);renderInsp();save();return}
   const d=e.target.closest('[data-del]');
-  if(d){const k=d.dataset.del;S[k].splice(+d.dataset.i,1);renderInsp();renderHal();renderFot();head();save()}
+  if(d){const k=d.dataset.del;S[k].splice(+d.dataset.i,1);renderInsp();renderHal();renderPasos();renderFot();head();save()}
 });
 $('#reset').onclick=e=>confirmTap(e.target,'reset',()=>{const id=S.id;S=null;delRep(id);showList();toast('Informe eliminado')});
 
 // fotos
 document.addEventListener('change',async e=>{const el=e.target;if(el.dataset.afoto===undefined||!S)return;const a=S.areas[+el.dataset.afoto];a.fot=a.fot||[];for(const f of el.files){try{a.fot.push(await shrink(f))}catch(x){toast('No se pudo leer una foto')}}el.value='';renderInsp();save()});
 function shareText(){const alta=S.hal.filter(h=>h.sev==='Alta').length,def=S.areas.filter(a=>a.cond==='Deficiente').length;
-  return `Informe de visita – ${S.hotel||'Hotel'} (${S.disc})\nFecha: ${fmtF(S.fecha)} · ${S.dia}\nÁreas inspeccionadas: ${nInsp()} de ${S.areas.length} (${def} deficientes)\nHallazgos: ${S.hal.length} (${alta} de severidad alta)${S.concl?'\nConclusión preliminar: '+S.concl:''}${S.resumen?'\n\n'+S.resumen:''}\n\nSe adjunta el informe en PDF.\nGrupo Roble · Debida diligencia hoteles Hyatt`}
+  return `Informe de visita – ${S.hotel||'Hotel'} (${S.disc})\nFecha: ${fmtF(S.fecha)} · ${S.dia}\nÁreas inspeccionadas: ${nInsp()} de ${S.areas.length} (${def} deficientes)\nHallazgos: ${S.hal.length} (${alta} de severidad alta)${S.concl?'\nConclusión preliminar: '+S.concl:''}${S.resumen?'\n\n'+S.resumen:''}${S.pasos&&S.pasos.length?'\n\nPasos a seguir:\n'+S.pasos.map((x,i)=>`${i+1}. ${x.t}${x.resp?' ('+x.resp+')':''}`).join('\n'):''}\n\nSe adjunta el informe en PDF.\nGrupo Roble · Debida diligencia hoteles Hyatt`}
 function buildShare(){const su=`Informe de visita ${S.hotel||''} – ${S.disc} – ${fmtF(S.fecha)}`,b=shareText(),q=encodeURIComponent;
   $('#sMail').href=`https://outlook.office.com/mail/deeplink/compose?subject=${q(su)}&body=${q(b)}`;
   $('#sGmail').href=`https://mail.google.com/mail/?view=cm&fs=1&su=${q(su)}&body=${q(b)}`;
@@ -351,6 +355,9 @@ async function makePDF(){
 
   // pendientes
   if(S.pen.length){y+=2;bar('Solicitudes pendientes');S.pen.forEach(p=>{const l=wrap(p.t,CW-62,9);need(l.length*4.2+3);T('•',M+1,y,{s:9});doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...cNAVY);doc.text(l,M+5,y);T(`${p.resp||'–'}  ·  ${fmtF(p.f)||'–'}`,W-M,y,{s:8,a:'right',c:MUTED});y+=l.length*4.2+2})}
+
+  // pasos a seguir
+  if(S.pasos&&S.pasos.length){y+=2;bar('Pasos a seguir');S.pasos.forEach((x,i)=>{const l=wrap(x.t,CW-78,9);need(l.length*4.2+3);T(`${i+1}.`,M+1,y,{s:9,b:1,c:cNAVY});doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...cNAVY);doc.text(l,M+6,y);T(`${x.est||'Pendiente'}  ·  ${x.resp||'–'}  ·  ${fmtF(x.f)||'–'}`,W-M,y,{s:8,a:'right',c:MUTED});y+=l.length*4.2+2})}
 
   // fotos
   const FOTOS=[...S.fot,...S.areas.flatMap(a=>(a.fot||[]).map(f=>({...f,c:`${a.n||'Área'}${f.c?' – '+f.c:''}`})))];
